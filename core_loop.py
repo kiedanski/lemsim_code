@@ -79,6 +79,8 @@ for i in range(P):
     players[i]['model'] = mo
     players[i]['con'] = c_
     players[i]['var'] = v_
+    players[i]['history_bat'] = np.zeros(PERIOD)
+    players[i]['history_cost'] = np.zeros(PERIOD)
 
 
 def prepare_bid(id_, net_, price_):
@@ -109,12 +111,12 @@ def prepare_bid(id_, net_, price_):
 # bats = []
 # for i in range(PERIOD - SLICE + 1):
 
-mar = MarketInterface(r)
 
 
-for i in range(1):
-    print(i)
+for i in range(PERIOD - SLICE + 1):
+    mar = MarketInterface(r)
     for p in range(P):
+        print(i, p)
         data = players[p]
         mo, c_, v_ = data['model'], data['con'], data['var']
         data['price'] = data['allprices'][i: i + SLICE, :]
@@ -126,20 +128,20 @@ for i in range(1):
         sol = cleanup_solution(mo, c_, v_, data)
 
         bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
-        net = sol['var'][0]
-        print(p, net)
+        net = sol['net'][0]
+        print(i, p, round(net, 4), ' net')
 
         price = data['price'][0, :]
         bids = prepare_bid(p, net, price)
+        print(i, p, bids, ' bids')
         if bids is not None:
             for bi in bids:
                 id_bid = mar.accept_bid(bi)
-                print(p, id_bid)
 
 
     mar.clear()
     for p in range(P):
-        print(p)
+        print(i, p, '(2)')
 
         data = players[p]
         data['commitment'] = None
@@ -160,9 +162,13 @@ for i in range(1):
         sol = cleanup_solution(mo, c_, v_, data)
 
         bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
-        net = sol['var'][0]
+        net = sol['net'][0]
+        data['history_bat'][i] = bat
+        data['history_cost'][i] = sol['var'][0]
 
         data['charge'] += bat
+        data['commitment'] = None
+        update_current_prior(i, data)
 
 
 

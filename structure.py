@@ -194,7 +194,7 @@ def init_problem(data, neginf=-1e5):
     return model, CONS, VARS
 
 
-def update_problem(model, CONS, VARS, data, EPS=1e-3):
+def update_problem(model, CONS, VARS, data, EPS=1e-5):
 
     T, NS = data['T'], data['num_slopes']
     EC, ED = (1 / data['efc']), data['efd']
@@ -240,16 +240,12 @@ def update_problem(model, CONS, VARS, data, EPS=1e-3):
     if com is not None:
         if com >= 0:
             model.add_constraint(
-                    ct = model.sum(
-                        C_[0] * EC - D_[0] * ED + LOAD[t] >= com - EPS
-                        ),
+                    ct = model.sum( C_[0] * EC - D_[0] * ED + LOAD[0]) >= com - EPS,
                     ctname = 'commitment'
                     )
         else:
             model.add_constraint(
-                    ct = model.sum(
-                        C_[0] * EC - D_[0] * ED + LOAD[t] <= com + EPS
-                        ),
+                    ct = model.sum(C_[0] * EC - D_[0] * ED + LOAD[0]) <= com + EPS,
                     ctname = 'commitment'
                     )
 
