@@ -129,7 +129,6 @@ for i in range(PERIOD - SLICE + 1):
 
         bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
         net = sol['net'][0]
-        print(i, p, round(net, 4), ' net')
 
         price = data['price'][0, :]
         bids = prepare_bid(p, net, price)
@@ -151,9 +150,9 @@ for i in range(PERIOD - SLICE + 1):
             mtq, mtp = mar.get_user_result(p)
             set_prior_with_market(data, mtq, mtp)
             accumulate_sample(i, data, mtq, mtp)
+            print('Q',i, p, data['queue_ps'])
 
             if not np.allclose(mtq, 0):
-                print(mtq)
                 data['commitment'] = mtq
 
         
