@@ -48,7 +48,6 @@ class MarketInterface(pm.Market):
                 self.users_to_key[owner_id] = uid
             new_bid = (bid[0], bid[1] + eps, uid, bid[3], bid[4])
             id_ = super().accept_bid(*new_bid)
-            self.callbacks[uid] = callback
             return id_
 
 
@@ -57,13 +56,6 @@ class MarketInterface(pm.Market):
             tr, ex = self.run(method)
         else:
             tr, ex = self.run(method, r=r)
-        results = []
-        for k in self.callbacks:
-            q, p = self.get_user_result(k)
-            self.callbacks[k](q, p, ex)
-            results.append((self.key_to_users[k], q, p))
-
-        self.results = results
 
     def get_user_result(self, user_id):
         """
@@ -73,14 +65,14 @@ class MarketInterface(pm.Market):
         tr = self.transactions.get_df()
         bids = self.bm.get_df()
         extra = self.extra
-
-        bid_id = bids.index[bids.user == user_id].tolist()
+        uid_ = self.users_to_key[user_id]
+        bid_id = bids.index[bids.user == uid_].tolist()
         buying = bids.iloc[bid_id[0], :].buying
         trans = tr[tr.bid.isin(bid_id)]
         if trans.shape[0] > 0:
             quantity_traded = trans.quantity.sum()
             price = trans.apply(lambda x: x.quantity * x.price, axis=1).sum()
-            price += extra['fees'][user_id]
+            price += extra['fees'][uid_]
             price_per_unit = price / quantity_traded if quantity_traded > 0 else 0
             if not buying:
                 quantity_traded *= -1.0

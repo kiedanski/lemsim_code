@@ -194,7 +194,7 @@ def init_problem(data, neginf=-1e5):
     return model, CONS, VARS
 
 
-def update_problem(model, CONS, VARS, data, EPS=1e-5):
+def update_problem(model, CONS, VARS, data, EPS=1e-3):
 
     T, NS = data['T'], data['num_slopes']
     EC, ED = (1 / data['efc']), data['efd']

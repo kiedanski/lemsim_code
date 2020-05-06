@@ -1,6 +1,7 @@
 from structure import init_problem, update_problem, cleanup_solution
 from collections import deque
 from priors import *
+from market import MarketInterface
 import numpy as np
 import pymarket as pm
 
@@ -88,16 +89,16 @@ def prepare_bid(id_, net_, price_):
     
     bids = []
     if buying:
-        bid = (min(net_, price_[6]), price_[2], id_, True)
+        bid = (min(net_, price_[6]), price_[2], id_, True, 0)
         bids.append(bid)
         if net_ > price_[6]:
-            bid = (net_ - price_[6], price_[3], id_, True)
+            bid = (net_ - price_[6], price_[3], id_, True, 0)
             bids.append(bid)
     else:
-        bid = (-max(net_, price_[4]), price_[1], id_, False)
+        bid = (-max(net_, price_[4]), price_[1], id_, False, 0)
         bids.append(bid)
         if net_ < price_[4]:
-            bid = (-(net_ - price_[4]), price_[0], id_, False)
+            bid = (-(net_ - price_[4]), price_[0], id_, False, 0)
             bids.append(bid)
     return bids
 
@@ -107,46 +108,70 @@ def prepare_bid(id_, net_, price_):
 # nets = []
 # bats = []
 # for i in range(PERIOD - SLICE + 1):
-i = 0
 
-mar = pm.Market()
-
+mar = MarketInterface(r)
 
 
-for p in range(P):
-    data = players[p]
-    mo, c_, v_ = data['model'], data['con'], data['var']
-    data['price'] = data['allprices'][i: i + SLICE, :]
-    data['load'] = data['allload'][i : i + SLICE]
-    set_priors(i, i + SLICE, data)
-    # print('PRE_MARKET', data['price'].round(3), sep='\n')
-    mo = update_problem(mo, c_, v_, data)
-    _ = mo.solve()
-    sol = cleanup_solution(mo, c_, v_, data)
+for i in range(1):
+    print(i)
+    for p in range(P):
+        data = players[p]
+        mo, c_, v_ = data['model'], data['con'], data['var']
+        data['price'] = data['allprices'][i: i + SLICE, :]
+        data['load'] = data['allload'][i : i + SLICE]
+        set_priors(i, i + SLICE, data)
+        # print('PRE_MARKET', data['price'].round(3), sep='\n')
+        mo = update_problem(mo, c_, v_, data)
+        _ = mo.solve()
+        sol = cleanup_solution(mo, c_, v_, data)
 
-    bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
-    net = sol['var'][0]
+        bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
+        net = sol['var'][0]
+        print(p, net)
 
-    price = data['price'][0, :]
-    bids = prepare_bid(p, net, price)
-    if bids is not None:
-        for bi in bids:
-            id_bid = mar.accept_bid(*bi)
-    print(p, id_bid)
-    print(p, round(net, 4), bids, sep='\t', end='\n--------\n')
-    # nets.append(net)
-    # bats.append(bat)
+        price = data['price'][0, :]
+        bids = prepare_bid(p, net, price)
+        if bids is not None:
+            for bi in bids:
+                id_bid = mar.accept_bid(bi)
+                print(p, id_bid)
 
 
-transactions, extras = mar.run('muda', r=r)
-stats = mar.statistics()
+    mar.clear()
+    for p in range(P):
+        print(p)
+
+        data = players[p]
+        data['commitment'] = None
+        mo, c_, v_ = data['model'], data['con'], data['var']
+
+        if p in mar.users_to_key:
+            mtq, mtp = mar.get_user_result(p)
+            set_prior_with_market(data, mtq, mtp)
+            accumulate_sample(i, data, mtq, mtp)
+
+            if not np.allclose(mtq, 0):
+                print(mtq)
+                data['commitment'] = mtq
+
+        
+        mo = update_problem(mo, c_, v_, data)
+        _ = mo.solve()
+        sol = cleanup_solution(mo, c_, v_, data)
+
+        bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
+        net = sol['var'][0]
+
+        data['charge'] += bat
+
+
+
 
     # if i == 0:
     # mtq, mtp = 0.99, 1.7
     # # else:
         # # mtq, mtp = -0.5, 1.2
     # set_prior_with_market(data, mtq, mtp) # TODO: possible fix if mtp > pb
-    # accumulate_sample(i, data, mtq, mtp)
 
     # update_current_prior(i, data)
 
