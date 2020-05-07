@@ -2,6 +2,28 @@ import pymarket as pm
 import numpy as np
 
 
+def prepare_bid(id_, net_, price_):
+    if np.allclose(net_, 0):
+        return None
+    else:
+        buying = net_ > 0
+    
+    bids = []
+    if buying:
+        bid = (min(net_, price_[6]), price_[2], id_, True, 0)
+        bids.append(bid)
+        if net_ > price_[6]:
+            bid = (net_ - price_[6], price_[3], id_, True, 0)
+            bids.append(bid)
+    else:
+        bid = (-max(net_, price_[4]), price_[1], id_, False, 0)
+        bids.append(bid)
+        if net_ < price_[4]:
+            bid = (-(net_ - price_[4]), price_[0], id_, False, 0)
+            bids.append(bid)
+    return bids
+
+
 class MarketInterface(pm.Market):
     """
     Extends a normal market to add

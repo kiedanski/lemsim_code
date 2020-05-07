@@ -107,7 +107,13 @@ def accumulate_sample(i, data, tq, tp):
     qpb = data['queue_pb'][index]
     qps = data['queue_ps'][index]
 
-    if tq > 0:
+    buying = data['net_tmp'] > 0
+    if np.allclose(tp, 0):
+        if buying:
+            qqb.append(0)
+        else:
+            qqs.append(0)
+    elif tq > 0:
         qqb.append(tq)
         qpb.append(tp)
     else:
@@ -118,7 +124,10 @@ def accumulate_sample(i, data, tq, tp):
 def update_current_prior(i, data):
 
     index = data['slot2prior'][i]
-    freq = data['freq']
+    freq = data.get('freq', 0)
+    if freq is None:
+        return
+    
     suffix = ['qb', 'qs', 'pb', 'ps']
     queues = [data['queue_{0}'.format(suf)][index] for suf in suffix]
     priors = [data['priors_{0}'.format(suf)][index] for suf in suffix]
