@@ -36,58 +36,20 @@ def run(N, T, D, pt, market, freq, seed):
 
     return (end, players)
 
-args = (50, 48, 10, 'optimistic', True, 1, 1234)
-lazy_pickle(PREF + "50-48-10-opt-f1")(run)(*args)
 
-args = (50, 48, 10, 'pesimistic', True, 1, 1234)
-lazy_pickle(PREF + "50-48-10-pes-f1")(run)(*args)
-
-args = (50, 48, 10, 'pesimistic', False, 1, 1234)
-lazy_pickle(PREF + "50-48-10-pes-f1-nm")(run)(*args)
-
-args = (50, 48, 10, 'neutral', True, 1, 1234)
-lazy_pickle(PREF + "50-48-10-neut-f1")(run)(*args)
-
-args = (50, 48, 10, 'solar', True, 1, 1234)
-lazy_pickle(PREF + "50-48-10-sol-f1")(run)(*args)
-
-args = (50, 48, 10, 'unique', True, 1, 1234)
-lazy_pickle(PREF + "50-48-10-uni-f1")(run)(*args)
+N = 50
+T = 48
+D = 10
+for seed in [1234]:
+    args = (N, T, D, 'pesimistic', False, None, seed)
+    s = PREF + "-".join(map(str,args))
+    lazy_pickle(s)(run)(*args)
 
 
-args = (50, 48, 10, 'optimistic', True, 2, 1234)
-lazy_pickle(PREF + "50-48-10-opt-f2")(run)(*args)
+for tp in ['optimistic', 'pesimistic', 'neutral', 'solar', 'unique']:
+    for fq in [1]:
+        for seed in [1234]:
 
-args = (50, 48, 10, 'pesimistic', True, 2, 1234)
-lazy_pickle(PREF + "50-48-10-pes-f2")(run)(*args)
-
-args = (50, 48, 10, 'pesimistic', False, 2, 1234)
-lazy_pickle(PREF + "50-48-10-pes-f2-nm")(run)(*args)
-
-args = (50, 48, 10, 'neutral', True, 2, 1234)
-lazy_pickle(PREF + "50-48-10-neut-f2")(run)(*args)
-
-args = (50, 48, 10, 'solar', True, 2, 1234)
-lazy_pickle(PREF + "50-48-10-sol-f2")(run)(*args)
-
-args = (50, 48, 10, 'unique', True, 2, 1234)
-lazy_pickle(PREF + "50-48-10-uni-f2")(run)(*args)
-
-
-args = (50, 48, 10, 'optimistic', True, 5, 1234)
-lazy_pickle(PREF + "50-48-10-opt-f5")(run)(*args)
-
-args = (50, 48, 10, 'pesimistic', True, 5, 1234)
-lazy_pickle(PREF + "50-48-10-pes-f5")(run)(*args)
-
-args = (50, 48, 10, 'pesimistic', False, 5, 1234)
-lazy_pickle(PREF + "50-48-10-pes-f5-nm")(run)(*args)
-
-args = (50, 48, 10, 'neutral', True, 5, 1234)
-lazy_pickle(PREF + "50-48-10-neut-f5")(run)(*args)
-
-args = (50, 48, 10, 'solar', True, 5, 1234)
-lazy_pickle(PREF + "50-48-10-sol-f5")(run)(*args)
-
-args = (50, 48, 10, 'unique', True, 5, 1234)
-lazy_pickle(PREF + "50-48-10-uni-f5")(run)(*args)
+            args = (N, T, D, tp, True, fq, seed)
+            s = PREF + "-".join(map(str,args))
+            lazy_pickle(s)(run)(*args)

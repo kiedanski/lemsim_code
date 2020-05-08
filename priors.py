@@ -86,6 +86,7 @@ def set_prior_with_market(data, tq, tp):
     time slot based on the results of the market.
     """
 
+
     if tq >= 0:
         set_, clear_, update_ = 6, 4, 2
     else:
@@ -107,7 +108,7 @@ def accumulate_sample(i, data, tq, tp):
     qpb = data['queue_pb'][index]
     qps = data['queue_ps'][index]
 
-    buying = data['net_tmp'] > 0
+    buying = data['history_pre_net'] > 0
     if np.allclose(tp, 0):
         if buying:
             qqb.append(0)

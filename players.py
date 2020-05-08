@@ -42,7 +42,7 @@ PRIOR_TYPES = {
         'neutral': lambda t, d: (
             t, np.tile(np.arange(t), d), 0.1),
         'solar': lambda t, d: (
-            2, np.tile([1 if np.abs(j - (t // 2)) < (t//4) else 0 for j in range(t)], d), 0.1),
+            2, np.tile([1 if np.abs(j - (t // 2)) < (t//4) else 0 for j in range(t)], d), 0),
         'unique': lambda t, d: (
             1, np.zeros(t * d).astype(int), 0.1),
 
@@ -108,6 +108,12 @@ def random_player(T, D, prior_type, r):
     template['priors_ps'][:, 0] = val_sell * (1 + MARKUP)
     template['priors_ps'][:, 1] = template['priors_pb'][:, 0] * 0.2
     template['priors_ps'][:, 2] = template['priors_pb'][:, 0] * 0.1
+
+
+    if prior_type == 'solar' and S2P.max() > 0:
+        template['priors_pb'][1, 0] = val_buy[1] * 0.8
+        template['priors_ps'][1, 0] = val_sell[0] * 1.2
+
 
 
     return template

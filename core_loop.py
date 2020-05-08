@@ -16,7 +16,8 @@ def init_players(players):
         players[i]['var'] = v_
         players[i]['history_bat'] = np.zeros(L)
         players[i]['history_cost'] = np.zeros(L)
-        players[i]['history_net'] = np.zeros(L)
+        players[i]['history_pre_net'] = np.zeros(L)
+        players[i]['history_post_net'] = np.zeros(L)
 
 
 
@@ -51,7 +52,7 @@ def core_loop(players, config):
 
                 bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
                 net = sol['net'][0]
-                data['net_tmp'] = net
+                data['history_pre_net'] = net
 
                 price = data['price'][0, :]
                 bids = prepare_bid(p, net, price)
@@ -85,11 +86,11 @@ def core_loop(players, config):
             net = sol['net'][0]
             data['history_bat'][i] = bat
             data['history_cost'][i] = sol['var'][0]
-            data['history_net'][i] = sol['net'][0]
+            data['history_post_net'][i] = sol['net'][0]
 
             data['charge'] += bat
             data['commitment'] = None
-            data.pop('net_tmp', None)
             update_current_prior(i, data)
+
 
 
