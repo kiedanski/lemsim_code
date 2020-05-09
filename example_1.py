@@ -9,7 +9,7 @@ from utils import lazy_pickle
 PREF = "res/"
 
 
-def run(N, T, D, pt, market, freq, seed):
+def run(N, T, D, pt, market, freq, seed, onlyprice=False):
 
     r = np.random.RandomState(seed)
 
@@ -23,6 +23,7 @@ def run(N, T, D, pt, market, freq, seed):
             'SLICE': T,
             'RANDOM_STATE': r,
             'MARKET': market,
+            'ONLYPRICE': onlyprice,
             }
 
     start = time.perf_counter()
@@ -40,16 +41,26 @@ def run(N, T, D, pt, market, freq, seed):
 N = 50
 T = 48
 D = 10
-for seed in [1234]:
+for seed in [1234, 69, 1312, 2210]:
     args = (N, T, D, 'pesimistic', False, None, seed)
     s = PREF + "-".join(map(str,args))
     lazy_pickle(s)(run)(*args)
 
-
-for tp in ['optimistic', 'pesimistic', 'neutral', 'solar', 'unique']:
-    for fq in [1]:
-        for seed in [1234]:
+TYPES = ['optimistic', 'pesimistic', 'neutral', 'solar', 'unique']
+for tp in TYPES:
+    for fq in [1, 5]:
+        for seed in [1234, 69, 1312, 2210]:
 
             args = (N, T, D, tp, True, fq, seed)
+            s = PREF + "-".join(map(str,args))
+            lazy_pickle(s)(run)(*args)
+
+
+TYPES = ['optimistic', 'pesimistic', 'neutral', 'solar', 'unique']
+for tp in TYPES:
+    for fq in [1, 5]:
+        for seed in [1234, 69, 1312, 2210]:
+
+            args = (N, T, D, tp, True, fq, seed, True)
             s = PREF + "-".join(map(str,args))
             lazy_pickle(s)(run)(*args)

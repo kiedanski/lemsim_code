@@ -29,6 +29,7 @@ def core_loop(players, config):
     r = config['RANDOM_STATE']
     P = len(players)
     MARKET = config.get('MARKET', True)
+    ONLYPRICE = config.get('ONLYPRICE', False)
 
     init_players(players)
 
@@ -52,7 +53,7 @@ def core_loop(players, config):
 
                 bat = sol['var'][SLICE] - sol['var'][2 * SLICE]
                 net = sol['net'][0]
-                data['history_pre_net'] = net
+                data['history_pre_net'][i] = net
 
                 price = data['price'][0, :]
                 bids = prepare_bid(p, net, price)
@@ -90,7 +91,7 @@ def core_loop(players, config):
 
             data['charge'] += bat
             data['commitment'] = None
-            update_current_prior(i, data)
+            update_current_prior(i, data, onlyprice=ONLYPRICE)
 
 
 
