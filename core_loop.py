@@ -32,6 +32,8 @@ def core_loop(players, config):
     ONLYPRICE = config.get('ONLYPRICE', False)
 
     init_players(players)
+    welfare = np.zeros(ROUNDS)
+    traded = np.zeros(ROUNDS)
 
     for i in range(ROUNDS):
 
@@ -62,7 +64,8 @@ def core_loop(players, config):
                         id_bid = mar.accept_bid(bi)
 
 
-        if MARKET: mar.clear()
+        if MARKET:
+            mar.clear()
         for p in range(P):
 
             data = players[p]
@@ -92,6 +95,8 @@ def core_loop(players, config):
             data['charge'] += bat
             data['commitment'] = None
             update_current_prior(i, data, onlyprice=ONLYPRICE)
+
+    return welfare, traded
 
 
 

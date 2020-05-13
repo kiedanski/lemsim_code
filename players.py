@@ -49,7 +49,7 @@ PRIOR_TYPES = {
 }
 
 
-def random_player(T, D, prior_type, r):
+def random_player(T, D, prior_type, r, flat=False, load=None, solar=True):
 
     L = T * D
 
@@ -57,22 +57,26 @@ def random_player(T, D, prior_type, r):
     
     PS = 8
     TR = 2 * (T // 3)
-    PB = ([12] * TR + [15] * (T - TR)) * D
+    if flat:
+        PB = [12] * L
+    else:
+        PB = ([12] * TR + [15] * (T - TR)) * D
 
     template = get_player_template(T, L, N_PRI)
 
-    load = np.zeros(L + T)
-    for t in range(0, L + T, T):
-        tmp = r.uniform(0, 4, T)
-        tmp[T // 4: 3 * (T // 4)] += r.uniform(-2, 0, (3 * (T // 4) - (T // 4)))
-        load[t: t + T] = tmp
+    if load is None:
+        load = r.uniform(0, 4, L + T)
+    if solar is True:
+        for t in range(0, L + T, T):
+            tmp = r.uniform(-0.3, 0, (3 * (T // 4) - (T // 4)))
+            load[t + (T // 4): t + (3 * (T // 4))] += tmp
     LO = load.reshape(-1, T)
 
     forecast = np.vstack([LO[:i, :].mean(axis=0) for i in range(1, D + 1)]).flatten()
     load = load[T:]
 
     template['allload'] = load
-    template['allforecast'] = forecast
+    template['allforecast'] = load
     template['allprices'][:, : 2] = PS
     template['allprices'][:, 2] = PB
     template['allprices'][:, 3] = PB
