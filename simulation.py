@@ -6,7 +6,7 @@ import pickle
 from players import get_player_template, random_player
 from core_loop import init_players, core_loop
 from utils import lazy_pickle
-from data.process_data import get_data
+from process_data import get_data
 from itertools import product
 
 DATA = 'data/home_data_2012-13.csv'
