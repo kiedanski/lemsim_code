@@ -43,7 +43,7 @@ def core_loop(players, config):
             data = players[p]
             mo, c_, v_ = data['model'], data['con'], data['var']
             data['price'] = data['allprices'][i: i + SLICE, :]
-            data['load'] = data['allforecast'][i : i + SLICE]
+            data['load'] = data['allforcast'][i : i + SLICE]
             data['load'][0] = data['allload'][i]
 
             set_priors(i, i + SLICE, data)

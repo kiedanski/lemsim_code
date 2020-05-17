@@ -4,8 +4,8 @@ from itertools import product
 N = 50
 T = 48
 D = 10
-SEEDS = (1234, 2210, 1312, 6699)
-DAYS = (20, 120, 200, -1)
+SEEDS = (1234, 2210, 1312, 3322, 101)
+DAYS = (100, 120, 150, 180, 130)
 SD = list(zip(SEEDS, DAYS))
 TYPES = ['optimistic', 'pesimistic', 'neutral', 'solar', 'unique']
 FREQ = [1, 5, None]
