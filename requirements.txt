@@ -32,6 +32,6 @@ six==1.12.0
 tasklib==2.1.1
 tornado==5.1.1
 tzlocal==2.0.0
-urllib3==1.24.1
+urllib3==1.24.2
 vboxapi==1.0
 websocket-client==0.53.0
