@@ -1,0 +1,8 @@
+tags
+__pycache__/
+times.txt
+venv/
+.ipynb_checkpoints/
+.git/
+res/
+
