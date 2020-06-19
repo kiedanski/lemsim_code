@@ -20,7 +20,7 @@ def get_player_template(T, L, num_priors):
         'load':                               np.zeros((T)),
         'allprices':                       np.zeros((L, 7)),
         'allload':                              np.zeros(L),
-        'allforecast':                          np.zeros(L),
+        'allforcast':                          np.zeros(L),
         'priors_pb':              np.zeros((num_priors, 3)),
         'priors_ps':              np.zeros((num_priors, 3)),
         'priors_qb':              np.zeros((num_priors, 3)),
@@ -76,7 +76,7 @@ def random_player(T, D, prior_type, r, flat=False, load=None, forcast=None, sola
         load = load[T:]
 
     template['allload'] = load
-    template['allforcast'] = load
+    template['allforcast'] = forcast
     template['allprices'][:, : 2] = PS
     template['allprices'][:, 2] = PB
     template['allprices'][:, 3] = PB
