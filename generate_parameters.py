@@ -8,6 +8,7 @@ SEEDS = (1234, 2210, 1312, 3322, 101, 404, 505)
 DAYS = (100, 120, 150, 180, 130, 160, 170)
 SD = list(zip(SEEDS, DAYS))
 TYPES = ['optimistic', 'pesimistic', 'neutral', 'solar', 'unique']
+#TYPES = ['pesimistic']
 FREQ = [1, 5, None]
 UPDATE_PRICES = [True, False]
 FLAT_RATE = [True, False]

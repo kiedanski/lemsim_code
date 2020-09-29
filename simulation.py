@@ -92,7 +92,7 @@ if __name__ == "__main__":
         fq = None
     args = (N, T, D, pt, market, fq, seed, up, ftou, day)
 
-    s = PREF + "-".join(map(str,args)) + "?test5"
+    s = PREF + "-".join(map(str,args)) + "?test6"
     start = time.perf_counter()
     lazy_pickle(s)(run)(*args)
     end = time.perf_counter()

@@ -127,6 +127,7 @@ def build_price(prices, num_slopes):
 def init_problem(data, neginf=-1e5):
 
     model = cpx.Model(name="MIP Model")
+
     T = data['T']
     NS = data['num_slopes']
     EC, ED = (1 / data['efc']), data['efd']
