@@ -1,6 +1,6 @@
 asn1crypto==0.24.0
 backports-abc==0.5
-certifi==2018.8.24
+certifi==2022.12.7
 chardet==3.0.4
 configparser==3.5.0b2
 cryptography==2.6.1
